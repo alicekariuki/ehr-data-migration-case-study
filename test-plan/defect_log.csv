@@ -1,0 +1,7 @@
+defect_id,check_id,summary,records_affected,severity,root_cause,resolution,owner,status
+DEF-001,V02,Birth date missing or invalid placeholder (00/00/0000),138,High,Legacy system allowed placeholder and blank DOB at registration,Route to error queue; Registration to verify DOB from insurance card or ID before Mock 2,Registration lead,Open
+DEF-002,V02,Sex coded U or blank in legacy,111,Medium,Optional field in legacy registration screen,Load as Unknown; Registration to update at next visit; add as a required field in the target system,Registration lead,Accepted
+DEF-003,V04,10 probable duplicate patient pairs (same name + DOB + phone under different IDs),20,High,No duplicate check in legacy system at registration,HIM to review each pair and merge before load; add EMPI duplicate rule in target,HIM manager,Open
+DEF-004,V05,ICD-9 codes 780.79 and 799.9 missing from crosswalk,224,High,Crosswalk built from top-volume codes only,Clinical informaticist approved 780.79 -> R53.83 and 799.9 -> R69; add to crosswalk for Mock 2,Clinical informaticist,Resolved
+DEF-005,V06,Problem-list rows with no matching patient,6,Medium,Patients purged from legacy demographics but child rows retained,Exclude from load; log in error report for HIM,Data analyst,Resolved
+DEF-006,V08,Phone or ZIP set to NULL by cleansing rules,529,Low,Placeholder phones (000-000-0000) and 4-digit ZIPs in legacy,Accepted by data owner; patients will update at next visit through the portal or registration,Data owner,Accepted
