@@ -1,0 +1,14 @@
+target_table,target_field,data_type,required,source_table,source_field,transformation_rule,validation_rule
+patient,mrn,VARCHAR(10),Y,legacy_patients,pat_no,Prefix 'L' + pat_no (preserves legacy ID for cross-reference),Unique; not null
+patient,last_name,VARCHAR(60),Y,legacy_patients,last_nm,Trim spaces; convert to proper case,Not null; no leading/trailing spaces
+patient,first_name,VARCHAR(60),Y,legacy_patients,first_nm,Trim spaces,Not null
+patient,birth_date,DATE,Y,legacy_patients,birth_dt,Parse MM/DD/YYYY or YYYY-MM-DD; '00/00/0000' and blank -> NULL and route to error queue,Valid date; not in future; age <= 120
+patient,sex,VARCHAR(10),Y,legacy_patients,gender_cd,M or 1 -> Male; F or 2 -> Female; U or blank -> Unknown,Value in (Male; Female; Unknown)
+patient,phone,VARCHAR(14),N,legacy_patients,phone_no,Strip non-digits; format (XXX) XXX-XXXX; 000-000-0000 -> NULL,10 digits when present
+patient,zip_code,VARCHAR(5),N,legacy_patients,zip_cd,First 5 digits; fewer than 5 digits -> NULL,5 digits when present
+patient,active_flag,BIT,Y,legacy_patients,status_cd,A -> 1; I -> 0,Value in (0; 1)
+problem_list,mrn,VARCHAR(10),Y,legacy_problems,pat_no,Prefix 'L' + pat_no,Must exist in patient.mrn
+problem_list,icd10_code,VARCHAR(8),Y,legacy_problems,icd9_cd,Crosswalk lookup (mapping/icd9_to_icd10_crosswalk.csv); unmapped -> error queue for clinical review,Not null; valid ICD-10-CM
+problem_list,icd10_description,VARCHAR(120),Y,crosswalk,icd10_description,From crosswalk,Not null
+problem_list,onset_date,DATE,N,legacy_problems,onset_dt,Parse MM/DD/YYYY,Valid date
+problem_list,status,VARCHAR(10),Y,legacy_problems,problem_status,ACTIVE -> Active; RESOLVED -> Resolved,Value in (Active; Resolved)
